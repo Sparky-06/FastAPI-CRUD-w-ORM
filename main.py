@@ -11,7 +11,7 @@ class Campaign(SQLModel, table = True):
     campaign_id : int | None = Field(default = None, primary_key = True)
     name: str = Field(index=True)
     due_date : datetime | None = Field(default = None, index = True)
-    created_at: datetime | None = Field(default_factory=lambda : datetime.now(timezone.utc), nullable = True, index = True)
+    created_at: datetime | None = Field(default_factory=lambda : datetime.now(timezone.utc), index = True)
 
 
 
@@ -41,8 +41,8 @@ async def lifespan(app : FastAPI):
     create_db_and_tables()
     with Session(engine) as session:
         if not session.exec(select(Campaign)).first():
-            session.add_all([Campaign(name= "Black Friday", due_date = datetime.now()),
-                             Campaign(name= "Summer Lunch", due_date = datetime.now())
+            session.add_all([Campaign(name= "Black Friday", due_date = datetime.now(timezone.utc)),
+                             Campaign(name= "Summer Lunch", due_date = datetime.now(timezone.utc))
                              ])
             session.commit()
 
